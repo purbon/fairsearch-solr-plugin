@@ -1,5 +1,5 @@
 .idea/
-fairsearch-solr-plugin.iml
+*.iml
 target/
 # Compiled class file
 *.class
