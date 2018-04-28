@@ -17,7 +17,14 @@ import static java.util.Arrays.asList;
 
 public class FairRescorer extends Rescorer {
 
+    private final String protectedField;
+    private final String protectedValue;
     private FairTopK topK = new FairTopKImpl();
+
+    public FairRescorer(String protectedField, String protectedValue) {
+        this.protectedField = protectedField;
+        this.protectedValue = protectedValue;
+    }
 
     // final TopDocs firstPassTopDocs - the top n results from the first pass
 
@@ -77,7 +84,7 @@ public class FairRescorer extends Rescorer {
 
     private boolean isProtected(Document doc) {
         try {
-            return doc.get("gender").equals("f");
+            return doc.get(protectedField).equals(protectedValue);
         } catch (Exception ex) {
             throw new Error("Gender should be an stored value for this plugin to work properly.");
         }

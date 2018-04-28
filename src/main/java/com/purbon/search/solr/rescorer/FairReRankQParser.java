@@ -1,19 +1,22 @@
 package com.purbon.search.solr.rescorer;
 
 import org.apache.lucene.search.Query;
-import org.apache.solr.common.SolrException;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.QParser;
 import org.apache.solr.search.SyntaxError;
 
+import static com.purbon.search.solr.FairReRankQParserPlugin.PROTECTED_FIELD;
+import static com.purbon.search.solr.FairReRankQParserPlugin.PROTECTED_VALUE;
+import static com.purbon.search.solr.FairReRankQParserPlugin.RERANK_DOCS;
+import static com.purbon.search.solr.FairReRankQParserPlugin.RERANK_DOCS_DEFAULT;
+
 public class FairReRankQParser extends QParser {
 
     public static final String RERANK_QUERY = "fairReRankQuery";
-
-    public static final String RERANK_DOCS = "reRankDocs";
-    public static final int RERANK_DOCS_DEFAULT = 10;
     private final int reRankDocs;
+    private final String protectedField;
+    private final String protectedValue;
 
     public FairReRankQParser(final String qstr,
                              final SolrParams localParams,
@@ -31,13 +34,15 @@ public class FairReRankQParser extends QParser {
         // a cache key and the request holds a reference to the SolrCore - big & fat, ...
 
         reRankDocs  = localParams.getInt(RERANK_DOCS, RERANK_DOCS_DEFAULT);
+        protectedField = localParams.get(PROTECTED_FIELD);
+        protectedValue = localParams.get(PROTECTED_VALUE);
 
     }
 
 
     @Override
     public Query parse() throws SyntaxError {
-        return new FairReRankQuery(reRankDocs);
+        return new FairReRankQuery(reRankDocs, protectedField, protectedValue);
 
     }
 }

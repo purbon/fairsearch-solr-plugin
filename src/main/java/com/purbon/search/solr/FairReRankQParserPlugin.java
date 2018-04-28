@@ -12,7 +12,7 @@ public class FairReRankQParserPlugin extends QParserPlugin {
 
     public static final String NAME = "fairrerank";
     public static final String RERANK_DOCS = "reRankDocs";
-
+    public static final int RERANK_DOCS_DEFAULT = 10;
 
     public static final String PROTECTED_FIELD = "protectedField";
     public static final String PROTECTED_VALUE = "protectedValue";
