@@ -1,12 +1,19 @@
 package com.purbon.search.solr.rescorer;
 
 import org.apache.lucene.search.Query;
+import org.apache.solr.common.SolrException;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.QParser;
 import org.apache.solr.search.SyntaxError;
 
 public class FairReRankQParser extends QParser {
+
+    public static final String RERANK_QUERY = "fairReRankQuery";
+
+    public static final String RERANK_DOCS = "reRankDocs";
+    public static final int RERANK_DOCS_DEFAULT = 10;
+    private final int reRankDocs;
 
     public FairReRankQParser(final String qstr,
                              final SolrParams localParams,
@@ -23,16 +30,13 @@ public class FairReRankQParser extends QParser {
 
         // a cache key and the request holds a reference to the SolrCore - big & fat, ...
 
+        reRankDocs  = localParams.getInt(RERANK_DOCS, RERANK_DOCS_DEFAULT);
+
     }
 
 
     @Override
     public Query parse() throws SyntaxError {
-
-        int reRankDocs = 100; // rerank the top 100 docs. Alternatively, you can pass this in as a request param, which you can access in the
-
-        // constructor
-
         return new FairReRankQuery(reRankDocs);
 
     }

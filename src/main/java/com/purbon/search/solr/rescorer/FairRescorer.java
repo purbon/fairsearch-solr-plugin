@@ -4,6 +4,7 @@ import com.purbon.search.solr.lib.FairTopK;
 import com.purbon.search.solr.lib.FairTopKImpl;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.*;
+import org.apache.solr.request.SolrRequestInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,10 +27,8 @@ public class FairRescorer extends Rescorer {
 
     public TopDocs rescore(final IndexSearcher searcher, final TopDocs firstPassTopDocs, final int topN) throws IOException {
 
-
         // in case you need the main query:
-
-        // Query query = SolrRequestInfo.getRequestInfo().getResponseBuilder().getQuery();
+        //Query query = SolrRequestInfo.getRequestInfo().getResponseBuilder().getQuery();
 
         final ScoreDoc[] origScoreDocs = firstPassTopDocs.scoreDocs;
 
@@ -60,19 +59,6 @@ public class FairRescorer extends Rescorer {
         float proportion = 0.6f;
         int protectedElementsCount = Math.round(proportion * rescoredDocs.length);
 
-        // …
-
-        // finally sort the re-scored docs:
-        /*Arrays.sort(rescoredDocs, SCORE_DOC_COMPARATOR);
-
-        if (topN < rescoredDocs.length) { // not sure if this can ever happen
-            final ScoreDoc[] shortened = new ScoreDoc[topN];
-            System.arraycopy(rescoredDocs, 0, shortened, 0, topN);
-            return new TopDocs(firstPassTopDocs.totalHits, shortened, shortened[0].score);
-        } else {
-            return new TopDocs(firstPassTopDocs.totalHits, rescoredDocs, rescoredDocs[0].score);
-        }*/
-        System.out.println(npQueue.size()+" "+pQueue.size());
         return topK.fairTopK(npQueue, pQueue, protectedElementsCount, proportion, significance);
 
     }
